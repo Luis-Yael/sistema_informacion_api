@@ -97,27 +97,27 @@ class AdminsViewEdit(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def put(self, request, *args, **kwargs):
         # iduser=request.data["id"]
-        profile = get_object_or_404(Profiles, id=request.data["id"])
-        profile.fecha_nacimiento = request.data["fecha_nacimiento"]
-        profile.curp = request.data["curp"]
-        profile.rfc = request.data["rfc"]
-        profile.edad = request.data["edad"]
-        profile.telefono = request.data["telefono"]
-        profile.ocupacion = request.data["ocupacion"]
-        profile.matricula = request.data["matricula"]
-        profile.save()
-        temp = profile.user
+        admin = get_object_or_404(Administradores, id=request.data["id"])
+        admin.fecha_nacimiento = request.data["fecha_nacimiento"]
+        admin.curp = request.data["curp"]
+        admin.rfc = request.data["rfc"]
+        admin.edad = request.data["edad"]
+        admin.telefono = request.data["telefono"]
+        admin.ocupacion = request.data["ocupacion"]
+        admin.matricula = request.data["matricula"]
+        admin.save()
+        temp = admin.user
         temp.first_name = request.data["first_name"]
         temp.last_name = request.data["last_name"]
         temp.save()
-        user = ProfilesSerializer(profile, many=False).data
+        user = AdminSerializer(admin, many=False).data
 
         return Response(user,200)
     
     def delete(self, request, *args, **kwargs):
-        profile = get_object_or_404(Profiles, id=request.GET.get("id"))
+        admin = get_object_or_404(Administradores, id=request.GET.get("id"))
         try:
-            profile.user.delete()
+            admin.user.delete()
             return Response({"details":"Usuario eliminado"},200)
         except Exception as e:
             return Response({"details":"Algo pasó al eliminar"},400)
