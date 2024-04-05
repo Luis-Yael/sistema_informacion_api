@@ -104,27 +104,27 @@ class MaestrosViewEdit(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     def put(self, request, *args, **kwargs):
         # iduser=request.data["id"]
-        profile = get_object_or_404(Profiles, id=request.data["id"])
-        profile.fecha_nacimiento = request.data["fecha_nacimiento"]
-        profile.curp = request.data["curp"]
-        profile.rfc = request.data["rfc"]
-        profile.edad = request.data["edad"]
-        profile.telefono = request.data["telefono"]
-        profile.ocupacion = request.data["ocupacion"]
-        profile.matricula = request.data["matricula"]
-        profile.save()
-        temp = profile.user
+        maestro = get_object_or_404(Maestros, id=request.data["id"])
+        maestro.id_trabajador = request.data["id_trabajador"]
+        maestro.fecha_nacimiento = request.data["fecha_nacimiento"]
+        maestro.telefono = request.data["telefono"]
+        maestro.rfc = request.data["rfc"]
+        maestro.cubiculo = request.data["cubiculo"]
+        maestro.area_investigacion = request.data["area_investigacion"]
+        maestro.materias_json = json.dumps(request.data["materias_json"])
+        maestro.save()
+        temp = maestro.user
         temp.first_name = request.data["first_name"]
         temp.last_name = request.data["last_name"]
         temp.save()
-        user = ProfilesSerializer(profile, many=False).data
+        user = MaestroSerializer(maestro, many=False).data
 
         return Response(user,200)
     
     def delete(self, request, *args, **kwargs):
-        profile = get_object_or_404(Profiles, id=request.GET.get("id"))
+        profile = get_object_or_404(Maestros, id=request.GET.get("id"))
         try:
             profile.user.delete()
-            return Response({"details":"Usuario eliminado"},200)
+            return Response({"details":"Maestro eliminado"},200)
         except Exception as e:
             return Response({"details":"Algo pasó al eliminar"},400)
